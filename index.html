@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matearia Gülden — Cuias Artesanais do Rio Grande do Sul</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1a10;
+      --bg2:       #162118;
+      --bg3:       #1e2e20;
+      --cream:     #f0e8d5;
+      --rs-green:  #1a5c2e;
+      --rs-red:    #b91c1c;
+      --rs-yellow: #d4a017;
+      --gold:      #c8a040;
+      --gold2:     #e8c060;
+      --muted:     #7a8a78;
+      --border:    rgba(100,160,80,0.15);
+      --border2:   rgba(200,160,64,0.3);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── RS STRIPE HEADER ── */
+    .rs-stripe {
+      height: 4px;
+      background: linear-gradient(90deg,
+        var(--rs-green) 0%, var(--rs-green) 33.3%,
+        var(--rs-red) 33.3%, var(--rs-red) 66.6%,
+        var(--rs-yellow) 66.6%, var(--rs-yellow) 100%
+      );
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 4px; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(15,26,16,0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      animation: fadeDown .7s ease both;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 1rem;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--border2);
+      filter: brightness(.95) saturate(.9);
+    }
+
+    .logo-text {
+      display: flex; flex-direction: column; line-height: 1.1;
+    }
+
+    .logo-main {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-weight: 600;
+      color: var(--cream);
+    }
+
+    .logo-sub {
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--gold); opacity: .8;
+    }
+
+    nav ul { list-style: none; display: flex; gap: 2.5rem; }
+    nav a {
+      text-decoration: none; color: var(--muted);
+      font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+      transition: color .2s;
+    }
+    nav a:hover { color: var(--gold2); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 4rem 5rem;
+      position: relative;
+      overflow: hidden;
+      gap: 4rem;
+    }
+
+    /* RS diagonal bg accent */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 50%; height: 100%;
+      background: linear-gradient(135deg,
+        transparent 30%,
+        rgba(26,92,46,.12) 30%, rgba(26,92,46,.12) 50%,
+        rgba(185,28,28,.1) 50%, rgba(185,28,28,.1) 70%,
+        rgba(212,160,23,.08) 70%
+      );
+      pointer-events: none; z-index: 0;
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.4rem;
+      padding: .35rem .9rem;
+      border: 1px solid var(--border2);
+    }
+
+    /* Mini RS flag badge */
+    .rs-badge {
+      display: inline-flex; width: 18px; height: 12px;
+      overflow: hidden; border-radius: 1px;
+      flex-shrink: 0;
+      background: linear-gradient(
+        to bottom right,
+        var(--rs-green) 50%, var(--rs-red) 50%
+      );
+      position: relative;
+    }
+    .rs-badge::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 33%;
+      background: var(--rs-yellow);
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 6.5vw, 6rem);
+      font-weight: 600; line-height: 1.0;
+      letter-spacing: -.02em;
+      animation: fadeUp .7s .35s ease both;
+    }
+
+    h1 em { color: var(--gold2); font-style: italic; }
+
+    .hero-sub {
+      margin-top: 1.8rem;
+      max-width: 44ch; font-size: .98rem; color: var(--muted);
+      animation: fadeUp .7s .5s ease both;
+    }
+
+    .hero-cta {
+      margin-top: 2.8rem; display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp .7s .65s ease both;
+    }
+
+    .btn {
+      display: inline-block; padding: .85rem 2.2rem;
+      font-family: 'Jost', sans-serif; font-size: .8rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: all .25s;
+    }
+
+    .btn-gold { background: var(--rs-green); color: var(--cream); font-weight: 500; }
+    .btn-gold:hover { background: #24703e; }
+
+    .btn-outline {
+      background: transparent; color: var(--cream);
+      border: 1px solid var(--border2);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold2); }
+
+    /* Hero right side — logo showcase */
+    .hero-visual {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 2rem;
+      animation: fadeUp .9s .5s ease both;
+    }
+
+    .medallion-wrap {
+      position: relative; display: inline-block;
+    }
+
+    .medallion-wrap img {
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      object-fit: cover;
+      filter: drop-shadow(0 0 40px rgba(200,160,64,.25));
+    }
+
+    /* RS flag ribbon under medallion */
+    .rs-ribbon {
+      display: flex; width: 200px; height: 10px; border-radius: 2px;
+      overflow: hidden;
+    }
+    .rs-ribbon span {
+      flex: 1;
+    }
+    .rs-ribbon .r1 { background: var(--rs-green); }
+    .rs-ribbon .r2 { background: var(--rs-red); }
+    .rs-ribbon .r3 { background: var(--rs-yellow); }
+
+    .hero-visual-label {
+      font-size: .7rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); text-align: center;
+    }
+
+    /* ── RS FLAG SECTION ── */
+    .rs-banner {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden; height: 8px;
+      display: flex;
+    }
+    .rs-banner .b1 { flex: 1; background: var(--rs-green); }
+    .rs-banner .b2 { flex: 1; background: var(--rs-red); }
+    .rs-banner .b3 { flex: 1; background: var(--rs-yellow); }
+
+    /* ── SOBRE ── */
+    #sobre {
+      padding: 5rem 4rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 600; line-height: 1.1;
+      letter-spacing: -.01em; margin-bottom: 1.5rem;
+    }
+
+    h2 em { color: var(--gold2); font-style: italic; }
+
+    p { color: var(--muted); margin-bottom: 1rem; }
+
+    .sobre-visual {
+      position: relative; height: 400px;
+    }
+
+    .sobre-box-main {
+      position: absolute; top: 0; left: 0; right: 40px; bottom: 40px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* RS color accent bar on the visual box */
+    .sobre-box-main::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--rs-green), var(--rs-red), var(--rs-yellow));
+    }
+
+    .sobre-box-accent {
+      position: absolute; bottom: 0; right: 0;
+      width: 55%; height: 42%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: .3rem;
+    }
+
+    .sobre-box-accent strong {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem; color: var(--gold); line-height: 1;
+    }
+
+    .sobre-box-accent span {
+      font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── PRODUTOS ── */
+    #produtos {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .produtos-header { margin-bottom: 3.5rem; }
+
+    .produtos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--border);
+    }
+
+    .produto-card {
+      background: var(--bg2);
+      padding: 2.5rem 2rem;
+      transition: background .25s;
+      position: relative; overflow: hidden;
+    }
+
+    .produto-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      opacity: 0; transition: opacity .3s;
+    }
+
+    .produto-card:nth-child(3n+1)::before { background: var(--rs-green); }
+    .produto-card:nth-child(3n+2)::before { background: var(--rs-red); }
+    .produto-card:nth-child(3n+3)::before { background: var(--rs-yellow); }
+
+    .produto-card:hover { background: var(--bg3); }
+    .produto-card:hover::before { opacity: 1; }
+
+    .produto-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem; color: var(--border2);
+      line-height: 1; margin-bottom: 1rem;
+    }
+
+    .produto-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem; font-weight: 600;
+      margin-bottom: .5rem; color: var(--cream);
+    }
+
+    .produto-tag {
+      display: inline-block; margin-bottom: .8rem;
+      font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--border2);
+      padding: .18rem .6rem;
+    }
+
+    /* ── GRAVAÇÃO ── */
+    #gravacao {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px; background: var(--border);
+      margin-top: 3rem;
+    }
+
+    .step {
+      background: var(--bg2);
+      padding: 2rem 1.8rem;
+      position: relative; overflow: hidden;
+    }
+
+    .step-color-bar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+
+    .step:nth-child(1) .step-color-bar { background: var(--rs-green); }
+    .step:nth-child(2) .step-color-bar { background: var(--rs-red); }
+    .step:nth-child(3) .step-color-bar { background: var(--rs-yellow); }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem; color: var(--gold);
+      line-height: 1; margin-bottom: .8rem;
+    }
+
+    .step h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; font-weight: 600;
+      color: var(--cream); margin-bottom: .4rem;
+    }
+
+    /* ── ORIGEM ── */
+    #origem {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 4rem; align-items: center;
+    }
+
+    .flag-display {
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+    }
+
+    .flag-img {
+      width: 180px; height: 120px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border2);
+      filter: saturate(.85) brightness(.9);
+    }
+
+    .flag-label {
+      font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); text-align: center;
+    }
+
+    /* ── CONTATO ── */
+    #contato {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start;
+    }
+
+    .contact-links {
+      margin-top: 1.5rem;
+      display: flex; flex-direction: column; gap: .8rem;
+    }
+
+    .contact-link {
+      display: flex; align-items: center; gap: 1rem;
+      text-decoration: none; color: var(--muted);
+      font-size: .88rem; padding: 1rem 1.2rem;
+      border: 1px solid var(--border);
+      transition: all .2s; position: relative; overflow: hidden;
+    }
+
+    .contact-link::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      transition: background .2s;
+    }
+
+    .contact-link:nth-child(1):hover::before { background: #25d366; }
+    .contact-link:nth-child(2):hover::before { background: #e1306c; }
+
+    .contact-link:hover { border-color: var(--border2); color: var(--cream); }
+
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+
+    .contact-form input,
+    .contact-form textarea {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--cream);
+      padding: .85rem 1.1rem;
+      font-family: 'Jost', sans-serif;
+      font-size: .88rem;
+      resize: none;
+      transition: border-color .2s;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none; border-color: var(--rs-green);
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-rs {
+      height: 4px;
+      background: linear-gradient(90deg,
+        var(--rs-green) 33.3%, var(--rs-red) 33.3% 66.6%, var(--rs-yellow) 66.6%
+      );
+    }
+
+    .footer-inner {
+      padding: 1.8rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .78rem; color: var(--muted);
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; color: var(--gold);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 800px) {
+      nav { padding: 1rem 1.4rem; }
+      nav ul { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; gap: 3rem; }
+      .hero::after { display: none; }
+      .medallion-wrap img { width: 220px; height: 220px; }
+      #sobre, #contato, #origem { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 1.5rem; }
+      #produtos, #gravacao { padding: 4rem 1.5rem; }
+      .sobre-visual { height: 260px; }
+      .produtos-grid, .steps { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: .6rem; text-align: center; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rs-stripe"></div>
+
+  <nav>
+    <a href="#" class="logo">
+      <img src="ChatGPT_Image_5_de_mai__de_2026__17_05_30.png" alt="Logo Matearia Gülden" class="logo-img"/>
+      <div class="logo-text">
+        <span class="logo-main">Matearia Gülden</span>
+        <span class="logo-sub">Cuias Artesanais · RS</span>
+      </div>
+    </a>
+    <ul>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#produtos">Produtos</a></li>
+      <li><a href="#gravacao">Gravação</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="rs-badge"></span>
+        Feito no Rio Grande do Sul
+      </div>
+      <h1>Cuias com<br><em>alma</em><br>gaúcha</h1>
+      <p class="hero-sub">Cuias artesanais com gravação personalizada — tradição, identidade e qualidade que vêm da terra do chimarrão.</p>
+      <div class="hero-cta">
+        <a href="#contato" class="btn btn-gold">Peça a sua cuia</a>
+        <a href="#produtos" class="btn btn-outline">Ver produtos</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="medallion-wrap">
+        <img src="ChatGPT_Image_5_de_mai__de_2026__17_05_30.png" alt="Medalha Gülden"/>
+      </div>
+      <div class="rs-ribbon">
+        <span class="r1"></span>
+        <span class="r2"></span>
+        <span class="r3"></span>
+      </div>
+      <p class="hero-visual-label">Rio Grande do Sul · Brasil</p>
+    </div>
+  </section>
+
+  <div class="rs-banner"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div>
+      <p class="section-label">✦ Sobre nós</p>
+      <h2>Tradição e <em>arte</em> em cada cuia</h2>
+      <p>A Matearia Gülden nasceu da paixão pelo chimarrão e pelo artesanato gaúcho. Trabalhamos com cuias selecionadas, tratadas e gravadas com cuidado para garantir durabilidade e beleza em cada peça.</p>
+      <p>Seja para uso pessoal, presente especial ou brinde corporativo, cada cuia carrega identidade e propósito — do campo gaúcho à sua mão.</p>
+      <a href="https://www.instagram.com/mateariagulden_" target="_blank" class="btn btn-outline" style="margin-top:1.5rem; display:inline-block;">Ver no Instagram</a>
+    </div>
+    <div class="sobre-visual">
+      <div class="sobre-box-main">Foto da cuia / ambiente</div>
+      <div class="sobre-box-accent">
+        <strong>100%</strong>
+        <span>Artesanal</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUTOS -->
+  <section id="produtos">
+    <div class="produtos-header">
+      <p class="section-label">✦ Produtos</p>
+      <h2>Nossas <em>cuias</em></h2>
+    </div>
+    <div class="produtos-grid">
+      <div class="produto-card">
+        <div class="produto-num">01</div>
+        <span class="produto-tag">Mais vendida</span>
+        <h3>Cuia Natural</h3>
+        <p>Cuia em cabaça natural, curada e tratada artesanalmente. Ideal para o chimarrão do dia a dia.</p>
+      </div>
+      <div class="produto-card">
+        <div class="produto-num">02</div>
+        <span class="produto-tag">Personalizada</span>
+        <h3>Cuia com Gravação</h3>
+        <p>Grave nome, logo ou arte de sua escolha com pirografia. Única e inesquecível.</p>
+      </div>
+      <div class="produto-card">
+        <div class="produto-num">03</div>
+        <span class="produto-tag">Premium</span>
+        <h3>Cuia com Virola</h3>
+        <p>Acabamento em alpaca com gravação e virola sob medida. Sofisticação e tradição gaúcha.</p>
+      </div>
+      <div class="produto-card">
+        <div class="produto-num">04</div>
+        <span class="produto-tag">Corporativo</span>
+        <h3>Brindes em Lote</h3>
+        <p>Personalizamos lotes com a logo da sua empresa — perfeito para fins de ano e eventos.</p>
+      </div>
+      <div class="produto-card">
+        <div class="produto-num">05</div>
+        <span class="produto-tag">Acessório</span>
+        <h3>Bombas</h3>
+        <p>Bombas em inox e alpaca com filtro de qualidade. O complemento perfeito para a sua cuia.</p>
+      </div>
+      <div class="produto-card">
+        <div class="produto-num">06</div>
+        <span class="produto-tag">Especial</span>
+        <h3>Kit Chimarrão</h3>
+        <p>Cuia + bomba + erva selecionada — tudo pronto para presentear quem você ama.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRAVAÇÃO -->
+  <section id="gravacao">
+    <p class="section-label">✦ Personalização</p>
+    <h2>Sua arte na <em>cuia</em></h2>
+    <p style="max-width:52ch">Gravamos qualquer arte, logo, nome ou frase na sua cuia com técnica de pirografia. O resultado é duradouro, elegante e único.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-color-bar"></div>
+        <div class="step-num">01</div>
+        <h4>Escolha a cuia</h4>
+        <p>Selecione o modelo e tamanho que mais combina com você ou com o presenteado.</p>
+      </div>
+      <div class="step">
+        <div class="step-color-bar"></div>
+        <div class="step-num">02</div>
+        <h4>Envie a arte</h4>
+        <p>Mande logo, nome, frase ou referência. Nossa equipe adapta para a gravação.</p>
+      </div>
+      <div class="step">
+        <div class="step-color-bar"></div>
+        <div class="step-num">03</div>
+        <h4>Receba em casa</h4>
+        <p>Enviamos para todo o Brasil com embalagem caprichada e pronto para presentear.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORIGEM RS -->
+  <section id="origem">
+    <div class="flag-display">
+      <img src="1779326238324_image.png" alt="Bandeira do Rio Grande do Sul" class="flag-img"/>
+      <p class="flag-label">Rio Grande do Sul</p>
+    </div>
+    <div>
+      <p class="section-label">✦ Nossas raízes</p>
+      <h2>Orgulho <em>gaúcho</em></h2>
+      <p>A Matearia Gülden é gaúcha de coração. Nossas cuias carregam a tradição, a cultura e a garra do povo do Rio Grande do Sul — um estado que tem no chimarrão muito mais do que uma bebida: tem identidade.</p>
+      <p>Do sul do Brasil para o mundo, cada cuia Gülden é um pedaço do RS que você pode levar com você.</p>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato">
+    <div>
+      <p class="section-label">✦ Contato</p>
+      <h2>Vamos fazer <em>sua</em> cuia?</h2>
+      <p>Entre em contato pelo WhatsApp ou Instagram. Respondemos rapidinho!</p>
+      <div class="contact-links">
+        <a href="https://wa.me/55SEUNUMERO" target="_blank" class="contact-link">
+          <span style="font-size:1.2rem">📱</span>
+          WhatsApp — clique para conversar
+        </a>
+        <a href="https://www.instagram.com/mateariagulden_" target="_blank" class="contact-link">
+          <span style="font-size:1.2rem">📸</span>
+          @mateariagulden_
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="contact-form">
+        <input type="text" placeholder="Seu nome"/>
+        <input type="text" placeholder="WhatsApp ou e-mail"/>
+        <textarea rows="4" placeholder="Descreva o que você precisa — modelo, gravação, quantidade..."></textarea>
+        <a href="https://wa.me/55SEUNUMERO" target="_blank" class="btn btn-gold" style="text-align:center;">
+          Enviar pelo WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-rs"></div>
+    <div class="footer-inner">
+      <span class="footer-logo">_ Matearia Gülden _</span>
+      <span>© 2026 — Cuias Artesanais · Rio Grande do Sul</span>
+      <a href="https://www.instagram.com/mateariagulden_" target="_blank"
+         style="color: var(--gold); text-decoration:none;">Instagram</a>
+    </div>
+  </footer>
+
+</body>
+</html>
