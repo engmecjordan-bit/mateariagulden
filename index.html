@@ -579,6 +579,21 @@
       letter-spacing: .08em; text-transform: uppercase;
     }
 
+    .em-fabricacao-badge {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: .5rem;
+      background: var(--bg2);
+    }
+    .em-fabricacao-badge .ef-icon { font-size: 1.5rem; opacity: .4; }
+    .em-fabricacao-badge .ef-text {
+      font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); text-align: center;
+    }
+    .em-fabricacao-badge .ef-ref {
+      font-size: .6rem; color: var(--border2); letter-spacing: .1em;
+    }
+
     .catalogo-vazio {
       grid-column: 1/-1; text-align: center;
       padding: 4rem; color: var(--muted); font-size: .9rem;
@@ -942,6 +957,7 @@
       <button class="filtro-btn" onclick="filtrar('tabua', this)">Tábuas</button>
       <button class="filtro-btn" onclick="filtrar('kit', this)">Kits</button>
       <button class="filtro-btn" onclick="filtrar('corporativo', this)">Corporativo</button>
+      <button class="filtro-btn" onclick="filtrar('em-fabricacao', this)">Em Fabricação</button>
     </div>
 
     <div class="catalogo-grid" id="catalogoGrid">
@@ -1097,7 +1113,7 @@
     // 2. Copie o ID da URL: drive.google.com/file/d/ESTE_ID_AQUI/view
     // 3. Cole no campo "foto" abaixo como: "https://drive.google.com/uc?id=ESTE_ID_AQUI"
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        const produtos = [
+            const produtos = [
       { ref: "REF-001", nome: "Cuia com Virola em Alpaca — REF-001", categoria: "virola-alpaca", foto: "https://lh3.googleusercontent.com/d/1Ff2n-NaydbhMZbesxvAJK4B7XbchNHfk" },
       { ref: "REF-002", nome: "Cuia com Virola em Alpaca — REF-002", categoria: "virola-alpaca", foto: "https://lh3.googleusercontent.com/d/16BhYEAPSLV7mgWhSdtdunQakfaE8k9la" },
       { ref: "REF-003", nome: "Cuia com Virola em Alpaca — REF-003", categoria: "virola-alpaca", foto: "https://lh3.googleusercontent.com/d/14fKCpfBAtsf1a57rCBkSK3PF46F__6Pe" },
@@ -1147,17 +1163,17 @@
       { ref: "REF-047", nome: "Cuia com Virola em Alpaca — REF-047", categoria: "virola-alpaca", foto: "https://lh3.googleusercontent.com/d/1F31H5HBdJKyd_tJonKULGtws8mQTC7x6" },
       { ref: "REF-048", nome: "Cuia com Virola em Alpaca — REF-048", categoria: "virola-alpaca", foto: "https://lh3.googleusercontent.com/d/1lWaDCJ3_JD-NZm2DeT8roXjA65UqXPaX" },
       { ref: "REF-049", nome: "Cuia com Virola em Alpaca — REF-049", categoria: "virola-alpaca", foto: "https://lh3.googleusercontent.com/d/1Vzm2RNHUkWKM68vudznCRh4sgqL2ob7F" },
-      { ref: "REF-050", nome: "Cuia Natural Pequena", categoria: "cuia-natural", foto: "" },
-      { ref: "REF-051", nome: "Cuia Natural Média", categoria: "cuia-natural", foto: "" },
-      { ref: "REF-052", nome: "Cuia Natural Grande", categoria: "cuia-natural", foto: "" },
-      { ref: "REF-053", nome: "Cuia Gravada — Nome", categoria: "cuia-gravada", foto: "" },
-      { ref: "REF-054", nome: "Cuia Gravada — Logo", categoria: "cuia-gravada", foto: "" },
-      { ref: "REF-055", nome: "Cuia Gravada — Frase", categoria: "cuia-gravada", foto: "" },
-      { ref: "REF-056", nome: "Mateira Couro Natural", categoria: "mateira", foto: "" },
-      { ref: "REF-057", nome: "Mateira Couro Gravada", categoria: "mateira", foto: "" },
-      { ref: "REF-058", nome: "Tábua Pequena Lisa", categoria: "tabua", foto: "" },
-      { ref: "REF-059", nome: "Tábua Gravada — Nome", categoria: "tabua", foto: "" },
-      { ref: "REF-060", nome: "Kit Chimarrão Completo", categoria: "kit", foto: "" },
+      { ref: "REF-050", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-051", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-052", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-053", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-054", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-055", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-056", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-057", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-058", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-059", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
+      { ref: "REF-060", nome: "Em Fabricação", categoria: "em-fabricacao", foto: "" },
     ];
 
     const wppNum = "5554992178249";
@@ -1171,7 +1187,13 @@
       }
       grid.innerHTML = lista.map(p => {
         const msg = encodeURIComponent("Olá! Tenho interesse na " + p.ref + " — " + p.nome + (p.foto ? ". Link da foto: " + p.foto : "") + ". Poderia me passar mais informações?");
-        const imgHTML = p.foto
+        const imgHTML = p.categoria === 'em-fabricacao'
+          ? `<div class="catalogo-img-placeholder em-fabricacao-badge">
+               <span class="ef-icon">⚙️</span>
+               <span class="ef-text">Em Fabricação</span>
+               <span class="ef-ref">${p.ref}</span>
+             </div>`
+          : p.foto
           ? `<img class="catalogo-img" src="${p.foto}" alt="${p.nome}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
              <div class="catalogo-img-placeholder" style="display:none">📷<span>${p.ref}</span></div>`
           : `<div class="catalogo-img-placeholder">📷<span>${p.ref}</span></div>`;
