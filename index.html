@@ -525,12 +525,11 @@
 
     .catalogo-card {
       background: var(--bg2);
-      cursor: pointer;
+      cursor: zoom-in;
       transition: background .2s;
       position: relative; overflow: hidden;
     }
     .catalogo-card:hover { background: var(--bg3); }
-    .catalogo-card:hover .catalogo-overlay { opacity: 1; }
 
     .catalogo-img {
       width: 100%; aspect-ratio: 1/1;
@@ -547,20 +546,8 @@
       letter-spacing: .1em; text-transform: uppercase;
     }
 
-    .catalogo-overlay {
-      position: absolute; inset: 0;
-      background: rgba(15,26,16,.85);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity .25s;
-    }
-
-    .catalogo-overlay-btn {
-      display: flex; align-items: center; gap: .5rem;
-      padding: .6rem 1.2rem;
-      background: #25d366; color: white;
-      font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
-      text-decoration: none; font-family: 'Jost', sans-serif;
-    }
+    .catalogo-overlay { display: none; }
+    .catalogo-overlay-btn { display: none; }
 
     .catalogo-info {
       padding: .8rem 1rem;
@@ -605,6 +592,81 @@
     @media (max-width: 800px) {
       #catalogo { padding: 4rem 1.5rem; }
       .catalogo-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+
+    /* ── MODAL FOTO ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.85);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+
+    .modal-overlay.ativo {
+      opacity: 1; pointer-events: all;
+    }
+
+    .modal-img-wrap {
+      max-width: 520px; width: 100%;
+      border: 1px solid var(--border2);
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .modal-img-wrap img {
+      width: 100%; height: auto;
+      display: block; max-height: 65vh;
+      object-fit: contain;
+      background: var(--bg2);
+    }
+
+    .modal-footer {
+      max-width: 520px; width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-top: none;
+      padding: 1rem 1.2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .modal-info { flex: 1; }
+
+    .modal-ref {
+      font-size: .7rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .modal-nome {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem; color: var(--cream);
+    }
+
+    .modal-wpp {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .6rem 1.2rem;
+      background: #25d366; color: white;
+      font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+      text-decoration: none; font-family: 'Jost', sans-serif;
+      white-space: nowrap; flex-shrink: 0;
+      transition: background .2s;
+    }
+    .modal-wpp:hover { background: #1da851; }
+
+    .modal-close {
+      position: fixed; top: 1.2rem; right: 1.5rem;
+      font-size: .75rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--muted); cursor: pointer;
+      transition: color .2s;
+    }
+    .modal-close:hover { color: var(--cream); }
+
+    @media (max-width: 600px) {
+      .modal-footer { flex-direction: column; align-items: flex-start; }
     }
 
     /* ── GRAVAÇÃO ── */
@@ -1054,6 +1116,25 @@
     </div>
   </footer>
 
+
+  <!-- MODAL FOTO -->
+  <div class="modal-overlay" id="modalFoto" onclick="fecharModal(event)">
+    <span class="modal-close" onclick="fecharModal()">✕ fechar</span>
+    <div class="modal-img-wrap">
+      <img id="modalImg" src="" alt=""/>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-info">
+        <div class="modal-ref" id="modalRef"></div>
+        <div class="modal-nome" id="modalNome"></div>
+      </div>
+      <a id="modalWpp" href="#" target="_blank" class="modal-wpp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="13" height="13" fill="white"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+        Pedir esta cuia
+      </a>
+    </div>
+  </div>
+
   <!-- WHATSAPP FLUTUANTE -->
   <a href="https://wa.me/5554992178249?text=Olá!+Gostaria+de+mais+informações+sobre+os+produtos+da+Matearia+Gülden." target="_blank" class="whatsapp-float" title="Fale conosco no WhatsApp">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="30" height="30" fill="white">
@@ -1202,14 +1283,9 @@
              <div class="catalogo-img-placeholder" style="display:none">📷<span>${p.ref}</span></div>`
           : `<div class="catalogo-img-placeholder">📷<span>${p.ref}</span></div>`;
         return `
-          <div class="catalogo-card" data-cat="${p.categoria}">
+          <div class="catalogo-card" data-cat="${p.categoria}" onclick="abrirModal('${p.ref}', '${p.nome}', '${p.foto}', '${msg}')">
             ${imgHTML}
-            <div class="catalogo-overlay">
-              <a href="https://wa.me/${wppNum}?text=${msg}" target="_blank" class="catalogo-overlay-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="13" height="13" fill="white"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-                Pedir este
-              </a>
-            </div>
+  
             <div class="catalogo-info">
               <div class="catalogo-ref">${p.ref}</div>
               <div class="catalogo-nome">${p.nome}</div>
@@ -1228,6 +1304,25 @@
 
     // Render inicial
     renderCatalogo(produtos);
+
+    function abrirModal(ref, nome, foto, msg) {
+      document.getElementById('modalImg').src = foto || '';
+      document.getElementById('modalRef').textContent = ref;
+      document.getElementById('modalNome').textContent = nome;
+      document.getElementById('modalWpp').href = 'https://wa.me/' + wppNum + '?text=' + msg;
+      document.getElementById('modalFoto').classList.add('ativo');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModal(e) {
+      if (e && e.target !== document.getElementById('modalFoto') && !e.target.classList.contains('modal-close')) return;
+      document.getElementById('modalFoto').classList.remove('ativo');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') fecharModal({ target: document.getElementById('modalFoto') });
+    });
   </script>
 
   <script>
