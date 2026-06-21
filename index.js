@@ -8,7 +8,7 @@ app.use(express.json());
 
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_API_KEY });
 
-const VERIFY_TOKEN     = process.env.VERIFY_TOKEN;
+const VERIFY_TOKEN      = process.env.VERIFY_TOKEN;
 const WA_TOKEN          = process.env.WA_ACCESS_TOKEN;
 const PHONE_ID          = process.env.WA_PHONE_NUMBER_ID;
 const PRODUTOS_SHEET_ID = process.env.PRODUTOS_SHEET_ID; // ID da planilha "Base Robô Matearia"
@@ -16,6 +16,18 @@ const GOOGLE_CREDENTIALS = process.env.GOOGLE_CREDENTIALS; // JSON da service ac
 
 // Memória de conversas por usuário
 const sessions = {};
+
+// ── HELPERS ─────────────────────────────────────────────────────
+// Extrai só os dígitos de uma referência: "REF-052", "052", "ref 52" → 52
+function normRef(v) {
+  const m = String(v ?? "").match(/(\d{1,3})/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+// Exibição padronizada: 52 → "REF-052"
+function refLabel(num) {
+  return `REF-${String(num).padStart(3, "0")}`;
+}
 
 // ── GOOGLE SHEETS ──────────────────────────────────────────────
 async function getSheetsClient() {
@@ -36,7 +48,8 @@ async function buscarProduto(referencia) {
       range: "Produtos!A2:F1000",
     });
     const rows = res.data.values || [];
-    const row = rows.find((r) => String(r[0]).trim() === String(referencia).trim());
+    const alvo = normRef(referencia);
+    const row = rows.find((r) => normRef(r[0]) === alvo);
     if (!row) return null;
     return {
       referencia: row[0],
@@ -53,7 +66,7 @@ async function buscarProduto(referencia) {
 }
 
 function getFotoProduto(referencia) {
-  return FOTOS_PRODUTOS[parseInt(referencia)] || null;
+  return FOTOS_PRODUTOS[normRef(referencia)] || null;
 }
 
 // ── SYSTEM PROMPT ──────────────────────────────────────────────
@@ -165,6 +178,7 @@ app.post("/webhook", async (req, res) => {
   }
 
   console.log(`Mensagem de ${from}: ${text}`);
+  console.log("Prompt carregado? tamanho:", SYSTEM_PROMPT?.length);
 
   if (!sessions[from]) sessions[from] = [];
 
@@ -174,31 +188,35 @@ app.post("/webhook", async (req, res) => {
     let contextoExtra = "";
 
     if (refMatch) {
-      const refNumero = parseInt(refMatch[1]);
+      const refNumero = normRef(refMatch[1]);
       const produto = await buscarProduto(refNumero);
+      console.log(
+        "Ref detectada:", refMatch[1],
+        "| Produto:", produto ? produto.nome : "NÃO ENCONTRADO"
+      );
 
       if (produto) {
         if (produto.disponivel) {
-          contextoExtra = `\n\n[INFO DO SISTEMA]: A REF-${refNumero} está DISPONÍVEL. Nome: ${produto.nome}. Confirme a disponibilidade ao cliente normalmente, sem reenviar foto.`;
+          contextoExtra = `\n\n[INFO DO SISTEMA]: A ${refLabel(refNumero)} está DISPONÍVEL. Nome: ${produto.nome}. Confirme a disponibilidade ao cliente normalmente, sem reenviar foto.`;
         } else {
           // Produto vendido — busca similar e envia foto
-          const similarNum = produto.similar;
+          const similarNum = normRef(produto.similar);
           let fotoSimilarUrl = null;
           let nomeSimilar = "";
 
           if (similarNum) {
             const similarProduto = await buscarProduto(similarNum);
             fotoSimilarUrl = getFotoProduto(similarNum);
-            nomeSimilar = similarProduto?.nome || `REF-${similarNum}`;
+            nomeSimilar = similarProduto?.nome || refLabel(similarNum);
           }
 
           if (fotoSimilarUrl) {
             await sendWhatsAppImage(from, fotoSimilarUrl, `${nomeSimilar} — modelo similar disponível`);
           }
 
-          contextoExtra = `\n\n[INFO DO SISTEMA]: A REF-${refNumero} já foi VENDIDA (peça única). ${
+          contextoExtra = `\n\n[INFO DO SISTEMA]: A ${refLabel(refNumero)} já foi VENDIDA (peça única). ${
             similarNum
-              ? `Já enviamos a foto do modelo similar (REF-${similarNum}). Informe ao cliente que esse modelo específico foi vendido e que está mostrando um similar. PERGUNTE se ele tem interesse — NÃO informe o preço ainda.`
+              ? `Já enviamos a foto do modelo similar (${refLabel(similarNum)}). Informe ao cliente que esse modelo específico foi vendido e que está mostrando um similar. PERGUNTE se ele tem interesse — NÃO informe o preço ainda.`
               : "Não há similar cadastrado. Informe que o modelo foi vendido e pergunte se ele quer ver outras opções."
           }`;
         }
