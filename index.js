@@ -68,7 +68,7 @@ async function buscarProduto(referencia) {
 function getFotoProduto(referencia) {
   return FOTOS_PRODUTOS[normRef(referencia)] || null;
 }
-// deploy 
+// deplo
 // ── SYSTEM PROMPT ──────────────────────────────────────────────
 const SYSTEM_PROMPT = `Você é o assistente virtual da Matearia Gülden, especializada em cuias artesanais do Rio Grande do Sul, localizada em Farroupilha/RS.
 
