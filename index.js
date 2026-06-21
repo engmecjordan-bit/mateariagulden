@@ -14,7 +14,7 @@ const PHONE_ID          = process.env.WA_PHONE_NUMBER_ID;
 const PRODUTOS_SHEET_ID = process.env.PRODUTOS_SHEET_ID; // ID da planilha "Base Robô Matearia"
 const GOOGLE_CREDENTIALS = process.env.GOOGLE_CREDENTIALS; // JSON da service account
 
-// Memória de conversas por usuário
+// Memória de conversas por usuár
 const sessions = {};
 
 // ── HELPERS ─────────────────────────────────────────────────────
