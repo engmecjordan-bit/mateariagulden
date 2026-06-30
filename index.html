@@ -1128,11 +1128,27 @@
         <div class="modal-ref" id="modalRef"></div>
         <div class="modal-nome" id="modalNome"></div>
       </div>
+      <div class="modal-actions">
       <a id="modalWpp" href="#" target="_blank" class="modal-wpp">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="13" height="13" fill="white"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-        Pedir esta cuia
+        Quero só esta
       </a>
+      <button type="button" class="modal-add" onclick="adicionarItemCarrinhoModal()">Adicionar item ao carrinho</button>
+      </div>
     </div>
+  </div>
+
+  <!-- CARRINHO DE INTERESSE -->
+  <div class="cart-bar" id="cartBar">
+    <div class="cart-head">
+      <div class="cart-count-wrap" onclick="toggleCarrinho()">
+        <span class="cart-emoji">🧉</span>
+        <span class="cart-count"><b id="cartCount">0</b> <span id="cartLabel">itens no carrinho</span></span>
+        <span class="cart-toggle">▲</span>
+      </div>
+      <button type="button" class="cart-send" onclick="enviarCarrinho()">Falar no WhatsApp</button>
+    </div>
+    <div class="cart-lista" id="cartLista"></div>
   </div>
 
   <!-- WHATSAPP FLUTUANTE -->
@@ -1166,6 +1182,54 @@
       0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,.4); }
       50%       { box-shadow: 0 4px 32px rgba(37,211,102,.7); }
     }
+
+    /* ── CARRINHO DE INTERESSE ── */
+    .modal-footer { flex-direction: column; align-items: stretch; gap: 0.9rem; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-actions .modal-wpp, .modal-actions .modal-add { flex: 1; justify-content: center; }
+    @media (max-width: 380px) { .modal-actions { flex-direction: column; } }
+    .modal-add {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: transparent; border: 1px solid var(--border2); color: var(--gold2);
+      font-family: 'Jost', sans-serif; font-size: 0.8rem; font-weight: 400;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 11px 20px; border-radius: 40px; cursor: pointer; transition: all 0.25s;
+    }
+    .modal-add:hover { background: rgba(200,160,64,0.12); border-color: var(--gold2); }
+
+    .cart-bar {
+      position: fixed; left: 50%; bottom: 18px;
+      transform: translateX(-50%) translateY(160%);
+      z-index: 1200; width: min(560px, 92vw);
+      background: linear-gradient(180deg, var(--bg3), var(--bg2));
+      border: 1px solid var(--border2); border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.5);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow: hidden;
+    }
+    .cart-bar.ativo { transform: translateX(-50%) translateY(0); }
+    .cart-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+    .cart-count-wrap { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; min-width: 0; }
+    .cart-emoji { font-size: 1.3rem; }
+    .cart-count { font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; color: var(--cream); white-space: nowrap; }
+    .cart-count b { color: var(--gold2); font-weight: 600; }
+    .cart-toggle { color: var(--muted); font-size: 0.7rem; transition: transform 0.25s; }
+    .cart-bar.aberto .cart-toggle { transform: rotate(180deg); }
+    .cart-send {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #25d366; color: #06351a; font-family: 'Jost', sans-serif;
+      font-weight: 500; font-size: 0.86rem; border: none;
+      padding: 11px 18px; border-radius: 40px; cursor: pointer;
+      transition: filter 0.2s; white-space: nowrap;
+    }
+    .cart-send:hover { filter: brightness(1.08); }
+    .cart-lista { max-height: 0; overflow-y: auto; transition: max-height 0.3s ease; }
+    .cart-bar.aberto .cart-lista { max-height: 230px; border-top: 1px solid var(--border); }
+    .cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item-ref { font-family: 'Jost', sans-serif; font-weight: 500; color: var(--gold2); font-size: 0.85rem; min-width: 74px; }
+    .cart-item-nome { flex: 1; font-size: 0.8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cart-item-x { background: none; border: none; color: var(--muted); font-size: 1.05rem; cursor: pointer; line-height: 1; padding: 2px 8px; border-radius: 6px; transition: all 0.15s; }
+    .cart-item-x:hover { color: #fff; background: var(--rs-red); }
   </style>
 
   <script>
@@ -1270,7 +1334,7 @@
         return;
       }
       grid.innerHTML = lista.map(p => {
-        const msg = encodeURIComponent("Olá! Tenho interesse na " + p.ref + " — " + p.nome + (p.foto ? ". Link da foto: " + p.foto : "") + ". Poderia me passar mais informações?");
+        const msg = encodeURIComponent("Olá! Tenho interesse na " + p.ref + ". Pode me passar mais informações?");
         const imgHTML = p.categoria === 'em-fabricacao'
           ? `<div class="catalogo-img-placeholder em-fabricacao-badge">
                <span class="ef-icon">⚙️</span>
@@ -1311,12 +1375,66 @@
       document.getElementById('modalWpp').href = 'https://wa.me/' + wppNum + '?text=' + msg;
       document.getElementById('modalFoto').classList.add('ativo');
       document.body.style.overflow = 'hidden';
+      modalAtual = { ref: ref, nome: nome };
     }
 
     function fecharModal(e) {
       if (e && e.target !== document.getElementById('modalFoto') && !e.target.classList.contains('modal-close')) return;
       document.getElementById('modalFoto').classList.remove('ativo');
       document.body.style.overflow = '';
+    }
+
+    // ── CARRINHO DE INTERESSE ──────────────────────────────
+    let modalAtual = null;
+    let carrinho = [];
+
+    function adicionarCarrinho(ref, nome) {
+      if (!carrinho.some(i => i.ref === ref)) {
+        carrinho.push({ ref: ref, nome: nome });
+      }
+      renderCarrinho();
+    }
+
+    function adicionarItemCarrinhoModal() {
+      if (modalAtual) {
+        adicionarCarrinho(modalAtual.ref, modalAtual.nome);
+        fecharModal();
+      }
+    }
+
+    function removerCarrinho(ref) {
+      carrinho = carrinho.filter(i => i.ref !== ref);
+      renderCarrinho();
+    }
+
+    function toggleCarrinho() {
+      document.getElementById('cartBar').classList.toggle('aberto');
+    }
+
+    function renderCarrinho() {
+      const bar = document.getElementById('cartBar');
+      const count = carrinho.length;
+      document.getElementById('cartCount').textContent = count;
+      document.getElementById('cartLabel').textContent = count === 1 ? 'item no carrinho' : 'itens no carrinho';
+      if (count > 0) {
+        bar.classList.add('ativo');
+      } else {
+        bar.classList.remove('ativo');
+        bar.classList.remove('aberto');
+      }
+      document.getElementById('cartLista').innerHTML = carrinho.map(i =>
+        `<div class="cart-item">
+           <span class="cart-item-ref">${i.ref}</span>
+           <span class="cart-item-nome">${i.nome}</span>
+           <button class="cart-item-x" onclick="removerCarrinho('${i.ref}')" title="Remover">✕</button>
+         </div>`).join('');
+    }
+
+    function enviarCarrinho() {
+      if (!carrinho.length) return;
+      const refs = carrinho.map(i => i.ref).join(', ');
+      const msg = encodeURIComponent('Olá! Tenho interesse nas peças: ' + refs + '. Pode me passar mais informações?');
+      window.open('https://wa.me/' + wppNum + '?text=' + msg, '_blank');
     }
 
     document.addEventListener('keydown', e => {
