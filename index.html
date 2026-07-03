@@ -852,6 +852,7 @@
     <ul>
       <li><a href="#sobre">Sobre</a></li>
       <li><a href="#catalogo">Produtos</a></li>
+      <li><a href="jornada/">A Jornada</a></li>
       <li><a href="#gravacao">Gravação</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
@@ -904,6 +905,29 @@
   </section>
 
   <div class="rs-banner"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+
+  <!-- BANNER: A JORNADA DA CUIA -->
+  <style>
+    .jornada-convite{position:relative;overflow:hidden;background:#000 url('jornada/poster.jpg') center/cover no-repeat;}
+    .jornada-convite::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, rgba(10,14,10,.92) 0%, rgba(10,14,10,.55) 55%, rgba(10,14,10,.25) 100%);}
+    .jornada-convite .jc-inner{position:relative;max-width:1100px;margin:0 auto;padding:72px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:28px;justify-content:space-between;}
+    .jornada-convite .jc-eyebrow{letter-spacing:.3em;text-transform:uppercase;font-size:.72rem;color:var(--gold);margin-bottom:12px;}
+    .jornada-convite h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(1.8rem,4vw,2.8rem);color:var(--cream);line-height:1.15;margin:0 0 10px;}
+    .jornada-convite h2 em{color:var(--gold2);}
+    .jornada-convite p{color:var(--muted);max-width:46ch;line-height:1.7;margin:0;}
+    .jornada-convite .jc-btn{display:inline-flex;align-items:center;gap:10px;padding:15px 30px;border:1px solid var(--gold);color:var(--gold2);text-decoration:none;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;transition:background .25s,color .25s;white-space:nowrap;}
+    .jornada-convite .jc-btn:hover{background:var(--gold);color:var(--bg);}
+  </style>
+  <section class="jornada-convite" aria-label="Convite: a jornada da cuia">
+    <div class="jc-inner">
+      <div>
+        <div class="jc-eyebrow">Da semente &agrave; alpaca</div>
+        <h2>Veja como <em>nasce</em> uma cuia G&uuml;lden</h2>
+        <p>Uma experi&ecirc;ncia interativa: role a p&aacute;gina e acompanhe a cuia crescendo da semente at&eacute; ser coroada em alpaca.</p>
+      </div>
+      <a class="jc-btn" href="jornada/">Come&ccedil;ar a jornada &rarr;</a>
+    </div>
+  </section>
 
   <!-- SOBRE -->
   <section id="sobre">
