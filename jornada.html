@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Jornada da Cuia — Matearia Gülden</title>
 <meta name="description" content="Da semente à virola de alpaca: role a página e acompanhe o nascimento de uma cuia Gülden.">
+<link rel="icon" type="image/jpeg" href="moeda.jpg">
+<meta property="og:title" content="A Jornada da Cuia — Matearia Gülden">
+<meta property="og:description" content="Role a página e veja a cuia nascer: da semente do porongo à virola de alpaca.">
+<meta property="og:image" content="https://guldenconcept.com.br/poster.jpg">
+<meta property="og:url" content="https://guldenconcept.com.br/jornada.html">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -260,7 +266,7 @@
 <!-- JORNADA SCROLLYTELLING -->
 <section class="jornada" id="jornada" aria-label="A jornada da cuia, da semente à virola de alpaca">
   <div class="palco">
-    <video id="filme" src="jornada.mp4" poster="poster.jpg" muted playsinline preload="auto" aria-hidden="true"></video>
+    <video id="filme" src="jornada.mp4" poster="poster.jpg" muted playsinline webkit-playsinline preload="auto" aria-hidden="true"></video>
     <div class="progresso" id="barra"></div>
 
     <article class="etapa esq" data-ini="0.00" data-fim="0.104">
@@ -382,8 +388,17 @@
   if (filme.readyState >= 1) aoCarregar();
 
   // iOS: garantir que o vídeo esteja "ativado" para permitir seeks suaves
+  var destravado = false;
   function destrava(){
-    filme.play().then(function(){ filme.pause(); }).catch(function(){});
+    if (destravado) return;
+    destravado = true;
+    filme.muted = true;
+    filme.defaultMuted = true;
+    try { filme.load(); } catch(e){}
+    var p = filme.play();
+    if (p && p.then) p.then(function(){ filme.pause(); }).catch(function(){
+      // Modo de Baixo Consumo pode negar o play; o load() acima já força o download
+    });
     window.removeEventListener('touchstart', destrava);
     window.removeEventListener('scroll', destrava);
   }
@@ -440,14 +455,14 @@
   // laço de suavização: aproxima currentTime do alvo aos poucos
   var ultimo = -1;
   function laco(){
-    if (pronto && filme.readyState >= 2){
+    if (pronto && filme.readyState >= 2 && !filme.seeking){
       var atual = filme.currentTime;
       var delta = alvo - atual;
       if (Math.abs(delta) > 0.033){
         var novo = atual + delta * 0.22;
         // evita seeks redundantes no mesmo frame
         if (Math.abs(novo - ultimo) > 0.016){
-          filme.currentTime = novo;
+          try { filme.currentTime = novo; } catch(e){}
           ultimo = novo;
         }
       }
