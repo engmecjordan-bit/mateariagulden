@@ -88,7 +88,7 @@
   }
 
   /* ---------- jornada (scrollytelling) ---------- */
-  .jornada{position:relative;height:700svh}
+  .jornada{position:relative;height:1000svh}
   .palco{
     position:sticky;top:0;height:100svh;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
@@ -269,40 +269,52 @@
     <video id="filme" src="jornada.mp4" poster="poster.jpg" muted playsinline webkit-playsinline preload="auto" aria-hidden="true"></video>
     <div class="progresso" id="barra"></div>
 
-    <article class="etapa esq" data-ini="0.00" data-fim="0.104">
+    <article class="etapa esq" data-ini="0.00" data-fim="0.071">
       <div class="num">I &mdash; A semente</div>
       <h2>Tudo começa pequeno</h2>
       <p>Uma semente de porongo, rugosa e discreta. Dentro dela, sem pressa nenhuma, já mora a cuia que um dia vai chegar à sua mão.</p>
     </article>
 
-    <article class="etapa dir" data-ini="0.104" data-fim="0.216">
+    <article class="etapa dir" data-ini="0.071" data-fim="0.148">
       <div class="num">II &mdash; O broto</div>
       <h2>A vida abre caminho</h2>
       <p>Na terra do sul, a casca se rompe e o verde aparece. É o primeiro sinal de que a espera vai valer a pena.</p>
     </article>
 
-    <article class="etapa esq" data-ini="0.216" data-fim="0.518">
+    <article class="etapa esq" data-ini="0.148" data-fim="0.355">
       <div class="num">III &mdash; O crescimento</div>
       <h2>O tempo não se apressa</h2>
       <p>Meses ao sol e à chuva moldam o porongo na rama. A natureza desenha a curva; nós apenas respeitamos o desenho.</p>
     </article>
 
-    <article class="etapa dir" data-ini="0.518" data-fim="0.819">
+    <article class="etapa dir" data-ini="0.355" data-fim="0.561">
       <div class="num">IV &mdash; A colheita e o corte</div>
       <h2>O ponto exato</h2>
       <p>Colhido maduro, o porongo descansa e seca até ganhar o tom de madeira. Um único corte certeiro revela a cuia que existia ali dentro.</p>
     </article>
 
-    <article class="etapa esq" data-ini="0.819" data-fim="0.881">
+    <article class="etapa esq" data-ini="0.561" data-fim="0.604">
       <div class="num">V &mdash; A lapidação</div>
       <h2>Por dentro e por fora</h2>
       <p>Desbastada por dentro, polida por fora. É o trabalho que ninguém vê — e que todo chimarrão sente.</p>
     </article>
 
-    <article class="etapa dir" data-ini="0.881" data-fim="1.01">
+    <article class="etapa dir" data-ini="0.604" data-fim="0.676">
       <div class="num">VI &mdash; A virola</div>
       <h2>Coroada em alpaca</h2>
       <p>A tira de alpaca gravada abraça o bocal e se assenta para sempre. A partir daqui, ela não é mais um porongo. Ela carrega uma história e agora terá um novo começo em suas mãos.</p>
+    </article>
+
+    <article class="etapa dir" data-ini="0.676" data-fim="0.884">
+      <div class="num">VII &mdash; A assinatura</div>
+      <h2>Pronta para a sua história</h2>
+      <p>Antes de partir, cada peça recebe o toque final da matearia — o cuidado que transforma uma cuia em companheira de todas as rodas.</p>
+    </article>
+
+    <article class="etapa esq" data-ini="0.884" data-fim="1.01">
+      <div class="num">VIII &mdash; A família</div>
+      <h2>Cada mão tem a sua cuia</h2>
+      <p>O mesmo caminho, três destinos: a clássica coroada em alpaca, a Bago de Touro raiz e a cuia gravada a laser com a sua marca. Escolha a Gülden que vai contar a sua história.</p>
     </article>
 
     <div class="aviso-carregando" id="aviso">Preparando a jornada&hellip;</div>
@@ -379,7 +391,7 @@
   var pronto = false;
 
   function aoCarregar(){
-    duracao = filme.duration || 31.875;
+    duracao = filme.duration || 46.5;
     pronto = true;
     aviso.classList.add('some');
     atualizaAlvo();
