@@ -531,8 +531,6 @@
       border-color: var(--gold); color: var(--gold); 
     }
     .catalogo-card.vendido { cursor: default; }
-    .catalogo-card.vendido:hover { transform: none; box-shadow: none; }
-    .catalogo-card.vendido .catalogo-img { opacity: 1; }
 
     .catalogo-grid {
       display: grid;
@@ -681,6 +679,26 @@
       transition: color .2s;
     }
     .modal-close:hover { color: var(--cream); }
+
+    /* setas de navegação entre fotos ampliadas */
+    .modal-nav {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      z-index: 1001;
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.45); color: var(--cream);
+      border: 1px solid var(--border2);
+      font-size: 1.4rem; line-height: 1; cursor: pointer;
+      user-select: none; transition: background .2s, border-color .2s;
+    }
+    .modal-nav:hover { background: rgba(0,0,0,.8); border-color: var(--gold); }
+    .modal-nav.prev { left: 1.5rem; }
+    .modal-nav.next { right: 1.5rem; }
+    @media (max-width: 600px) {
+      .modal-nav { width: 40px; height: 40px; font-size: 1.2rem; }
+      .modal-nav.prev { left: .5rem; }
+      .modal-nav.next { right: .5rem; }
+    }
 
     @media (max-width: 600px) {
       .modal-footer { flex-direction: column; align-items: flex-start; }
@@ -1057,12 +1075,6 @@
     <!-- categorias: geradas por JS a partir da faixa de REF -->
     <div class="catalogo-filtros categorias" id="filtrosCategoria"></div>
 
-    <div class="catalogo-filtros">
-      <button class="filtro-btn ativo" onclick="filtrar('todas', this)">Todas</button>
-      <button class="filtro-btn" onclick="filtrar('disponiveis', this)">Disponíveis</button>
-      <button class="filtro-btn" onclick="filtrar('vendidas', this)">Vendidas</button>
-    </div>
-
     <div class="catalogo-grid" id="catalogoGrid">
       <!-- Os cards são gerados pelo JavaScript abaixo -->
     </div>
@@ -1164,6 +1176,8 @@
   <!-- MODAL FOTO -->
   <div class="modal-overlay" id="modalFoto" onclick="fecharModal(event)">
     <span class="modal-close" onclick="fecharModal()">✕ fechar</span>
+    <button type="button" class="modal-nav prev" id="modalPrev" onclick="navegarModal(-1, event)" aria-label="Anterior">‹</button>
+    <button type="button" class="modal-nav next" id="modalNext" onclick="navegarModal(1, event)" aria-label="Próxima">›</button>
     <div class="modal-img-wrap">
       <img id="modalImg" src="" alt=""/>
     </div>
@@ -1306,7 +1320,6 @@
     // 3. Cole no campo "foto" abaixo como: "https://drive.google.com/uc?id=ESTE_ID_AQUI"
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                     const API_BASE = "https://bot-financeiro-matearia-production.up.railway.app";
-    const VENDIDO_FALLBACK = "https://raw.githubusercontent.com/engmecjordan-bit/bot-financeiro-matearia/main/vendido.jpg";
     let produtos = [];
 
     const wppNum = "5554992178249";
@@ -1317,10 +1330,11 @@
     // ── CATEGORIAS POR FAIXA DE REFERÊNCIA ─────────────────
     // Para criar/ajustar categorias no futuro, basta editar esta lista.
     const CATEGORIAS = [
-      { id: 'alpaca',   nome: 'Cuias Alpaca',        min:  60, max: 122 },
-      { id: 'bago',     nome: 'Cuias Bago de Touro', min: 123, max: 155 },
-      { id: 'bombas',   nome: 'Bombas',              min: 156, max: 161 },
-      { id: 'suportes', nome: 'Suportes',            min: 162, max: 163 }
+      { id: 'alpaca',   nome: 'Cuias Alpaca',        min:  60, max: 140 },
+      { id: 'bago',     nome: 'Cuias Bago de Touro', min:   1, max:  59 },
+      { id: 'bombas',   nome: 'Bombas',              min: 141, max: 160 },
+      { id: 'suportes', nome: 'Suportes',            min: 171, max: 176 },
+      { id: 'matearia', nome: 'Mateira',            min: 161, max: 170 }
     ];
 
     function categoriaDe(refNum) {
@@ -1330,6 +1344,7 @@
     }
 
     function renderCatalogo(lista) {
+      listaVisivel = lista; // usada pela navegação do modal
       const grid = document.getElementById("catalogoGrid");
       if (!lista.length) {
         grid.innerHTML = '<div class="catalogo-vazio">Nenhuma pe\u00e7a encontrada.</div>';
@@ -1337,16 +1352,6 @@
       }
       grid.innerHTML = lista.map(p => {
         const label = refLabel(p.ref_num);
-        if (p.vendido) {
-          return `
-            <div class="catalogo-card vendido">
-              <img class="catalogo-img" src="${p.foto || VENDIDO_FALLBACK}" alt="Vendido" loading="lazy"/>
-              <div class="catalogo-info">
-                <div class="catalogo-ref">${label}</div>
-                <div class="catalogo-nome">${p.nome || ''}</div>
-              </div>
-            </div>`;
-        }
         const imgHTML = p.foto
           ? `<img class="catalogo-img" src="${p.foto}" alt="${p.nome || label}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
              <div class="catalogo-img-placeholder" style="display:none">\uD83D\uDCF7<span>${label}</span></div>`
@@ -1362,23 +1367,11 @@
       }).join('');
     }
 
-    let filtroAtivo = 'todas';
-
     function aplicarFiltro() {
-      let lista = produtos;
+      // vendidos nunca aparecem no site
+      let lista = produtos.filter(p => !p.vendido);
       if (categoriaAtiva !== 'todos') lista = lista.filter(p => categoriaDe(p.ref_num) === categoriaAtiva);
-      if (filtroAtivo === 'disponiveis') lista = lista.filter(p => !p.vendido);
-      else if (filtroAtivo === 'vendidas') lista = lista.filter(p => p.vendido);
       renderCatalogo(lista);
-    }
-
-    // filtro de STATUS (todas / disponíveis / vendidas)
-    function filtrar(modo, btn) {
-      filtroAtivo = modo;
-      document.querySelectorAll('#catalogo .catalogo-filtros:not(.categorias) .filtro-btn')
-        .forEach(b => b.classList.remove('ativo'));
-      if (btn) btn.classList.add('ativo');
-      aplicarFiltro();
     }
 
     // filtro de CATEGORIA (faixa de REF)
@@ -1395,7 +1388,8 @@
       const box = document.getElementById('filtrosCategoria');
       if (!box) return;
       const contagem = {};
-      produtos.forEach(p => {
+      const visiveis = produtos.filter(p => !p.vendido);
+      visiveis.forEach(p => {
         const c = categoriaDe(p.ref_num);
         contagem[c] = (contagem[c] || 0) + 1;
       });
@@ -1406,7 +1400,7 @@
       // com 0 ou 1 categoria, a barra não agrega nada
       if (presentes.length < 2) { box.innerHTML = ''; return; }
 
-      const btns = [{ id: 'todos', nome: 'Todos', qtd: produtos.length }]
+      const btns = [{ id: 'todos', nome: 'Todos', qtd: visiveis.length }]
         .concat(presentes.map(c => ({ id: c.id, nome: c.nome, qtd: contagem[c.id] })));
 
       box.innerHTML = btns.map(b =>
@@ -1417,11 +1411,37 @@
     }
 
     function abrirModalItem(refNum) {
-      const p = produtos.find(x => x.ref_num === refNum);
-      if (!p || p.vendido) return;
+      const idx = listaVisivel.findIndex(x => x.ref_num === refNum);
+      if (idx === -1) return;
+      mostrarNoModal(idx);
+      document.getElementById('modalFoto').classList.add('ativo');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Preenche o modal com o item na posição idx da lista visível
+    function mostrarNoModal(idx) {
+      const p = listaVisivel[idx];
+      if (!p) return;
+      modalIndex = idx;
       const label = refLabel(p.ref_num);
       const msg = encodeURIComponent("Ol\u00e1! Tenho interesse na " + label + ". Pode me passar mais informa\u00e7\u00f5es?");
-      abrirModal(label, p.nome || label, p.foto_full || p.foto || '', msg);
+      document.getElementById('modalImg').src = p.foto_full || p.foto || '';
+      document.getElementById('modalRef').textContent = label;
+      document.getElementById('modalNome').textContent = p.nome || label;
+      document.getElementById('modalWpp').href = 'https://wa.me/' + wppNum + '?text=' + msg;
+      modalAtual = { ref: label, nome: p.nome || label };
+      // setas só aparecem se houver mais de uma peça na lista atual
+      const temNav = listaVisivel.length > 1;
+      document.getElementById('modalPrev').style.display = temNav ? 'flex' : 'none';
+      document.getElementById('modalNext').style.display = temNav ? 'flex' : 'none';
+    }
+
+    // Avança/retrocede circularmente dentro da lista visível
+    function navegarModal(dir, e) {
+      if (e) e.stopPropagation();
+      if (!listaVisivel.length) return;
+      modalIndex = (modalIndex + dir + listaVisivel.length) % listaVisivel.length;
+      mostrarNoModal(modalIndex);
     }
 
     async function carregarCatalogo() {
@@ -1441,15 +1461,8 @@
     // Render inicial (busca do servidor)
     carregarCatalogo();
 
-    function abrirModal(ref, nome, foto, msg) {
-      document.getElementById('modalImg').src = foto || '';
-      document.getElementById('modalRef').textContent = ref;
-      document.getElementById('modalNome').textContent = nome;
-      document.getElementById('modalWpp').href = 'https://wa.me/' + wppNum + '?text=' + msg;
-      document.getElementById('modalFoto').classList.add('ativo');
-      document.body.style.overflow = 'hidden';
-      modalAtual = { ref: ref, nome: nome };
-    }
+    let listaVisivel = [];
+    let modalIndex = -1;
 
     function fecharModal(e) {
       if (e && e.target !== document.getElementById('modalFoto') && !e.target.classList.contains('modal-close')) return;
@@ -1511,7 +1524,10 @@
     }
 
     document.addEventListener('keydown', e => {
+      const modalAberto = document.getElementById('modalFoto').classList.contains('ativo');
       if (e.key === 'Escape') fecharModal({ target: document.getElementById('modalFoto') });
+      else if (modalAberto && e.key === 'ArrowRight') navegarModal(1);
+      else if (modalAberto && e.key === 'ArrowLeft') navegarModal(-1);
     });
   </script>
 
