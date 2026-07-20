@@ -513,6 +513,13 @@
       display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
     }
 
+    /* linha de categorias (derivada da faixa de REF) */
+    .catalogo-filtros.categorias { margin-bottom: .75rem; }
+    .catalogo-filtros.categorias:empty { display: none; }
+    .filtro-btn .filtro-qtd {
+      opacity: .55; margin-left: .45rem; font-size: .65rem;
+    }
+
     .filtro-btn {
       padding: .4rem 1.1rem;
       font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
@@ -1047,6 +1054,9 @@
       <p style="max-width:52ch">Clique em qualquer peça para fazer seu pedido direto pelo WhatsApp com o número de referência já preenchido.</p>
     </div>
 
+    <!-- categorias: geradas por JS a partir da faixa de REF -->
+    <div class="catalogo-filtros categorias" id="filtrosCategoria"></div>
+
     <div class="catalogo-filtros">
       <button class="filtro-btn ativo" onclick="filtrar('todas', this)">Todas</button>
       <button class="filtro-btn" onclick="filtrar('disponiveis', this)">Disponíveis</button>
@@ -1304,6 +1314,21 @@
 
     function refLabel(n) { return "REF-" + String(n).padStart(3, "0"); }
 
+    // ── CATEGORIAS POR FAIXA DE REFERÊNCIA ─────────────────
+    // Para criar/ajustar categorias no futuro, basta editar esta lista.
+    const CATEGORIAS = [
+      { id: 'alpaca',   nome: 'Cuias Alpaca',        min:  60, max: 122 },
+      { id: 'bago',     nome: 'Cuias Bago de Touro', min: 123, max: 155 },
+      { id: 'bombas',   nome: 'Bombas',              min: 156, max: 161 },
+      { id: 'suportes', nome: 'Suportes',            min: 162, max: 163 }
+    ];
+
+    function categoriaDe(refNum) {
+      const n = Number(refNum);
+      const c = CATEGORIAS.find(c => n >= c.min && n <= c.max);
+      return c ? c.id : 'outros';
+    }
+
     function renderCatalogo(lista) {
       const grid = document.getElementById("catalogoGrid");
       if (!lista.length) {
@@ -1338,17 +1363,57 @@
     }
 
     let filtroAtivo = 'todas';
+
     function aplicarFiltro() {
       let lista = produtos;
-      if (filtroAtivo === 'disponiveis') lista = produtos.filter(p => !p.vendido);
-      else if (filtroAtivo === 'vendidas') lista = produtos.filter(p => p.vendido);
+      if (categoriaAtiva !== 'todos') lista = lista.filter(p => categoriaDe(p.ref_num) === categoriaAtiva);
+      if (filtroAtivo === 'disponiveis') lista = lista.filter(p => !p.vendido);
+      else if (filtroAtivo === 'vendidas') lista = lista.filter(p => p.vendido);
       renderCatalogo(lista);
     }
+
+    // filtro de STATUS (todas / disponíveis / vendidas)
     function filtrar(modo, btn) {
       filtroAtivo = modo;
-      document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('ativo'));
+      document.querySelectorAll('#catalogo .catalogo-filtros:not(.categorias) .filtro-btn')
+        .forEach(b => b.classList.remove('ativo'));
       if (btn) btn.classList.add('ativo');
       aplicarFiltro();
+    }
+
+    // filtro de CATEGORIA (faixa de REF)
+    function filtrarCategoria(id, btn) {
+      categoriaAtiva = id;
+      document.querySelectorAll('#filtrosCategoria .filtro-btn').forEach(b => b.classList.remove('ativo'));
+      if (btn) btn.classList.add('ativo');
+      aplicarFiltro();
+    }
+
+    // Monta a barra de categorias só com as faixas que têm peças cadastradas.
+    // Enquanto não houver nenhum Suporte no catálogo, o botão nem aparece.
+    function renderFiltrosCategoria() {
+      const box = document.getElementById('filtrosCategoria');
+      if (!box) return;
+      const contagem = {};
+      produtos.forEach(p => {
+        const c = categoriaDe(p.ref_num);
+        contagem[c] = (contagem[c] || 0) + 1;
+      });
+
+      const presentes = CATEGORIAS.filter(c => contagem[c.id]);
+      if (contagem['outros']) presentes.push({ id: 'outros', nome: 'Outros' });
+
+      // com 0 ou 1 categoria, a barra não agrega nada
+      if (presentes.length < 2) { box.innerHTML = ''; return; }
+
+      const btns = [{ id: 'todos', nome: 'Todos', qtd: produtos.length }]
+        .concat(presentes.map(c => ({ id: c.id, nome: c.nome, qtd: contagem[c.id] })));
+
+      box.innerHTML = btns.map(b =>
+        `<button class="filtro-btn${b.id === categoriaAtiva ? ' ativo' : ''}" ` +
+        `onclick="filtrarCategoria('${b.id}', this)">${b.nome}` +
+        `<span class="filtro-qtd">${b.qtd}</span></button>`
+      ).join('');
     }
 
     function abrirModalItem(refNum) {
@@ -1366,6 +1431,7 @@
         const r = await fetch(API_BASE + "/api/catalogo");
         const d = await r.json();
         produtos = (d.itens || []).slice().sort((a, b) => a.ref_num - b.ref_num);
+        renderFiltrosCategoria();
         aplicarFiltro();
       } catch (e) {
         grid.innerHTML = '<div class="catalogo-vazio">N\u00e3o foi poss\u00edvel carregar o cat\u00e1logo agora. Recarregue a p\u00e1gina.</div>';
