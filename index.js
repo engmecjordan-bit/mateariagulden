@@ -372,8 +372,8 @@ const FAIXAS_CATEGORIA = [
   { id: "cuia-bago",  nome: "Cuia Bago de Touro", min: 1,   max: 59 },
   { id: "cuia-alpaca", nome: "Cuia com virola em alpaca", min: 60,  max: 140 },
   { id: "bomba",      nome: "Bomba de alpaca",   min: 141, max: 160 },
-  { id: "mateira",    nome: "Mateira",           min: 161, max: 170 },
-  { id: "suporte",    nome: "Suporte",           min: 171, max: 176 },
+  { id: "mateira",    nome: "Mateira",           min: 161, max: 171 },
+  { id: "suporte",    nome: "Suporte",           min: 172, max: 176 },
   { id: "porta-ervas", nome: "Porta ervas",      min: 177, max: 183 },
 ];
 
