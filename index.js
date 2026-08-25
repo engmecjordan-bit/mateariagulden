@@ -370,11 +370,12 @@ function registrarRefDaSessao(from, num) {
 // Se as faixas mudarem no site, atualize aqui também.
 const FAIXAS_CATEGORIA = [
   { id: "cuia-bago",  nome: "Cuia Bago de Touro", min: 1,   max: 69 },
-  { id: "cuia-alpaca", nome: "Cuia com virola em alpaca", min: 70,  max: 149 },
-  { id: "bomba",      nome: "Bomba de alpaca",   min: 150, max: 160 },
-  { id: "mateira",    nome: "Mateira",           min: 161, max: 171 },
-  { id: "suporte",    nome: "Suporte",           min: 172, max: 176 },
-  { id: "porta-ervas", nome: "Porta ervas",      min: 177, max: 183 },
+  { id: "cuia-pe-metal", nome: "Cuia com pé de metal", min: 70,  max: 119 },
+  { id: "cuia-alpaca", nome: "Cuia com virola em alpaca", min: 120,  max: 199 },
+  { id: "bomba",      nome: "Bomba de alpaca",   min: 200, max: 210 },
+  { id: "mateira",    nome: "Mateira",           min: 211, max: 221 },
+  { id: "suporte",    nome: "Suporte",           min: 222, max: 226 },
+  { id: "porta-ervas", nome: "Porta ervas",      min: 227, max: 233 },
 ];
 
 function categoriaDaRef(num) {
