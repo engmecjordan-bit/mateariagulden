@@ -371,11 +371,11 @@ function registrarRefDaSessao(from, num) {
 const FAIXAS_CATEGORIA = [
   { id: "cuia-bago",  nome: "Cuia Bago de Touro", min: 1,   max: 69 },
   { id: "cuia-pe-metal", nome: "Cuia com pé de metal", min: 70,  max: 119 },
-  { id: "cuia-alpaca", nome: "Cuia com virola em alpaca", min: 120,  max: 199 },
-  { id: "bomba",      nome: "Bomba de alpaca",   min: 200, max: 210 },
-  { id: "mateira",    nome: "Mateira",           min: 211, max: 221 },
-  { id: "suporte",    nome: "Suporte",           min: 222, max: 226 },
-  { id: "porta-ervas", nome: "Porta ervas",      min: 227, max: 233 },
+  { id: "cuia-alpaca", nome: "Cuia com virola em alpaca", min: 120,  max: 217 },
+  { id: "bomba",      nome: "Bomba de alpaca",   min: 218, max: 241 },
+  { id: "mateira",    nome: "Mateira",           min: 242, max: 252 },
+  { id: "suporte",    nome: "Suporte",           min: 253, max: 257 },
+  { id: "porta-ervas", nome: "Porta ervas",      min: 258, max: 264 },
 ];
 
 function categoriaDaRef(num) {
