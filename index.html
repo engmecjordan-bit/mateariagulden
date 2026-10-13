@@ -1330,18 +1330,20 @@
     // ── CATEGORIAS POR FAIXA DE REFERÊNCIA ─────────────────
     // Para criar/ajustar categorias no futuro, basta editar esta lista.
     const CATEGORIAS = [
-      { id: 'alpaca',   nome: 'Cuias Alpaca',        min: 120, max: 217 },
-      { id: 'bago',     nome: 'Cuias Bago de Touro', min:   1, max:  69 },
-      { id: 'pemetal',  nome: 'Cuias com Pé de Metal', min:  70, max: 119 },
-      { id: 'bombas',   nome: 'Bombas',              min: 218, max: 241 },
-      { id: 'suportes', nome: 'Suportes',            min: 253, max: 257 },
-      { id: 'portaerva', nome: 'Porta Erva',         min: 258, max: 264 },
-      { id: 'matearia', nome: 'Mateira',            min: 242, max: 252 }
+      // Cada categoria tem uma LISTA de intervalos: o histórico (1–264, nunca
+      // renumerado) e a folga alocada a partir da 265 para peças novas.
+      { id: 'alpaca',   nome: 'Cuias Alpaca',        intervalos: [[120, 217], [565, 864]] },
+      { id: 'bago',     nome: 'Cuias Bago de Touro', intervalos: [[1, 69], [265, 414]] },
+      { id: 'pemetal',  nome: 'Cuias com Pé de Metal', intervalos: [[70, 119], [415, 564]] },
+      { id: 'bombas',   nome: 'Bombas',              intervalos: [[218, 241], [865, 1014]] },
+      { id: 'suportes', nome: 'Suportes',            intervalos: [[253, 257], [1065, 1114]] },
+      { id: 'portaerva', nome: 'Porta Erva',         intervalos: [[258, 264], [1115, 1164]] },
+      { id: 'matearia', nome: 'Mateira',            intervalos: [[242, 252], [1015, 1064]] }
     ];
 
     function categoriaDe(refNum) {
       const n = Number(refNum);
-      const c = CATEGORIAS.find(c => n >= c.min && n <= c.max);
+      const c = CATEGORIAS.find(c => c.intervalos.some(([a, b]) => n >= a && n <= b));
       return c ? c.id : 'outros';
     }
 

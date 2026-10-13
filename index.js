@@ -369,18 +369,22 @@ function registrarRefDaSessao(from, num) {
 // ("Suporte para cuia" contém a palavra cuia e enganava a checagem por palavra-chave).
 // Se as faixas mudarem no site, atualize aqui também.
 const FAIXAS_CATEGORIA = [
-  { id: "cuia-bago",  nome: "Cuia Bago de Touro", min: 1,   max: 69 },
-  { id: "cuia-pe-metal", nome: "Cuia com pé de metal", min: 70,  max: 119 },
-  { id: "cuia-alpaca", nome: "Cuia com virola em alpaca", min: 120,  max: 217 },
-  { id: "bomba",      nome: "Bomba de alpaca",   min: 218, max: 241 },
-  { id: "mateira",    nome: "Mateira",           min: 242, max: 252 },
-  { id: "suporte",    nome: "Suporte",           min: 253, max: 257 },
-  { id: "porta-ervas", nome: "Porta ervas",      min: 258, max: 264 },
+  // Cada categoria tem uma LISTA de intervalos: o histórico (1–264, nunca
+  // renumerado) e a folga alocada a partir da 265 para peças novas.
+  { id: "cuia-bago",  nome: "Cuia Bago de Touro", intervalos: [[1, 69], [265, 414]] },
+  { id: "cuia-pe-metal", nome: "Cuia com pé de metal", intervalos: [[70, 119], [415, 564]] },
+  { id: "cuia-alpaca", nome: "Cuia com virola em alpaca", intervalos: [[120, 217], [565, 864]] },
+  { id: "bomba",      nome: "Bomba de alpaca",   intervalos: [[218, 241], [865, 1014]] },
+  { id: "mateira",    nome: "Mateira",           intervalos: [[242, 252], [1015, 1064]] },
+  { id: "suporte",    nome: "Suporte",           intervalos: [[253, 257], [1065, 1114]] },
+  { id: "porta-ervas", nome: "Porta ervas",      intervalos: [[258, 264], [1115, 1164]] },
 ];
 
 function categoriaDaRef(num) {
   const n = Number(num);
-  const f = FAIXAS_CATEGORIA.find((c) => n >= c.min && n <= c.max);
+  const f = FAIXAS_CATEGORIA.find((c) =>
+    c.intervalos.some(([a, b]) => n >= a && n <= b)
+  );
   return f ? f.id : "outros";
 }
 
